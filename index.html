@@ -1,0 +1,295 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="theme-color" content="#0f1115">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-title" content="Entreno">
+<title>Entreno Juan</title>
+<style>
+:root{--bg:#0f1115;--card:#181b22;--card2:#20242d;--txt:#eef0f4;--mut:#8a91a0;--acc:#c6f24e;--acc2:#4ec9f2;--line:#2a2f3a}
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,sans-serif;background:var(--bg);color:var(--txt);padding-bottom:130px;-webkit-tap-highlight-color:transparent}
+header{position:sticky;top:0;z-index:10;background:rgba(15,17,21,.95);backdrop-filter:blur(8px);padding:14px 16px 0;border-bottom:1px solid var(--line)}
+h1{font-size:20px;font-weight:800;letter-spacing:-.3px;display:flex;justify-content:space-between;align-items:baseline}
+h1 span{color:var(--acc)}
+h1 small{font-size:12px;color:var(--mut);font-weight:700;letter-spacing:1px}
+.tabs{display:flex;gap:6px;overflow-x:auto;padding:12px 0;scrollbar-width:none}
+.tabs::-webkit-scrollbar{display:none}
+.tab{flex:0 0 auto;background:var(--card);border:1px solid var(--line);color:var(--mut);padding:8px 14px;border-radius:999px;font-weight:700;font-size:14px;cursor:pointer}
+.tab.on{background:var(--acc);color:#111;border-color:var(--acc)}
+main{padding:16px;max-width:720px;margin:0 auto}
+.foco{font-size:12px;color:var(--mut);text-transform:uppercase;letter-spacing:1px;margin-bottom:4px}
+.foco-t{font-size:24px;font-weight:800;margin-bottom:6px;line-height:1.15}
+.prog{height:6px;background:var(--card2);border-radius:9px;overflow:hidden;margin:10px 0 18px}
+.prog i{display:block;height:100%;background:var(--acc);width:0;transition:width .3s}
+.block{background:var(--card);border:1px solid var(--line);border-radius:16px;padding:14px;margin-bottom:14px}
+.block.ok{border-color:#4b5f1c}
+.btype{display:flex;justify-content:space-between;align-items:center;gap:8px;margin-bottom:10px}
+.badge{font-size:11px;font-weight:800;letter-spacing:.8px;padding:4px 8px;border-radius:6px;background:var(--card2);color:var(--acc2)}
+.badge.cardio{color:#f2a94e}.badge.stretch{color:#c49ef2}
+.restbtn{font-size:13px;font-weight:700;background:transparent;border:1px solid var(--line);color:var(--txt);padding:6px 10px;border-radius:8px;cursor:pointer;white-space:nowrap}
+.ex{padding:10px 0;border-top:1px solid var(--line)}
+.ex:first-of-type{border-top:none;padding-top:0}
+.exn{font-weight:700;font-size:16px;line-height:1.25}
+.exm{font-size:13px;color:var(--mut);margin-top:3px}
+.exm b{color:var(--acc)}
+.tag{display:inline-block;font-size:10px;font-weight:800;padding:2px 6px;border-radius:5px;background:#3a2a4f;color:#d7b8ff;margin-left:4px;vertical-align:middle}
+.note{font-size:12px;color:var(--mut);margin-top:8px;padding:6px 8px;background:var(--card2);border-radius:8px}
+.kg{display:flex;align-items:center;gap:8px;margin-top:8px}
+.kg input{width:84px;background:var(--card2);border:1px solid var(--line);color:var(--txt);padding:8px;border-radius:8px;font-size:16px}
+.kg label{font-size:12px;color:var(--mut)}
+.sets{display:flex;flex-wrap:wrap;gap:8px;margin-top:12px}
+.set{width:44px;height:44px;border-radius:12px;border:2px solid var(--line);background:var(--card2);color:var(--mut);font-weight:800;font-size:15px;cursor:pointer}
+.set.d{background:var(--acc);border-color:var(--acc);color:#111}
+.simple{display:flex;justify-content:space-between;align-items:center;gap:12px}
+.chk{width:34px;height:34px;border-radius:10px;border:2px solid var(--line);background:var(--card2);cursor:pointer;flex:0 0 auto;font-weight:900;color:#111;font-size:16px}
+.chk.d{background:var(--acc);border-color:var(--acc)}
+.btn{display:block;width:100%;margin-top:12px;padding:14px;border-radius:12px;font-size:15px;font-weight:800;cursor:pointer;border:1px solid var(--line);background:var(--card);color:var(--txt)}
+.btn.pri{background:var(--acc);color:#111;border-color:var(--acc)}
+.btn.ghost{background:none;color:var(--mut);font-weight:600}
+.timer{position:fixed;left:12px;right:12px;bottom:calc(12px + env(safe-area-inset-bottom));max-width:696px;margin:0 auto;background:var(--card2);border:1px solid var(--line);border-radius:16px;padding:10px 14px;display:none;align-items:center;gap:10px;box-shadow:0 10px 30px rgba(0,0,0,.5);z-index:20}
+.timer.on{display:flex}
+.timer .tl{font-size:11px;color:var(--mut);font-weight:700;letter-spacing:.5px}
+.timer .t{font-size:30px;font-weight:800;font-variant-numeric:tabular-nums;line-height:1}
+.timer .t.end{color:var(--acc)}
+.timer .tb{flex:1;height:6px;background:var(--bg);border-radius:9px;overflow:hidden}
+.timer .tb i{display:block;height:100%;background:var(--acc2)}
+.timer button{background:var(--bg);border:1px solid var(--line);color:var(--txt);border-radius:10px;padding:8px 10px;font-weight:700;cursor:pointer}
+.gl h3{font-size:16px;margin:18px 0 6px;color:var(--acc)}
+.gl p,.gl li{font-size:14px;line-height:1.5;color:#cfd3db}
+.gl ul{padding-left:18px}
+.gl .tut{display:grid;grid-template-columns:repeat(4,1fr);gap:6px;margin:10px 0}
+.gl .tut div{background:var(--card2);border-radius:10px;padding:8px;text-align:center;font-size:11px;color:var(--mut)}
+.gl .tut b{display:block;font-size:22px;color:var(--txt)}
+.log{background:var(--card);border:1px solid var(--line);border-radius:14px;padding:12px 14px;margin-bottom:10px}
+.log h4{font-size:15px;margin-bottom:6px}
+.log h4 span{color:var(--mut);font-weight:600;font-size:13px}
+.log div{font-size:13px;color:#cfd3db;line-height:1.6}
+.empty{color:var(--mut);text-align:center;padding:40px 10px;font-size:14px}
+.err{background:#3a1d1d;border:1px solid #6b2a2a;padding:14px;border-radius:12px;font-size:14px;line-height:1.5}
+</style>
+</head>
+<body>
+<header>
+  <h1><div>ENTRENO <span>JUAN</span></div><small id="etapa"></small></h1>
+  <nav class="tabs" id="tabs"></nav>
+</header>
+<main id="main"><div class="empty">Cargando plan…</div></main>
+
+<div class="timer" id="timer">
+  <div><div class="tl" id="tlabel">DESCANSO</div><div class="t" id="tt">0:00</div></div>
+  <div class="tb"><i id="tbar"></i></div>
+  <button id="tplus">+15</button>
+  <button id="tstop">✕</button>
+</div>
+
+<script src="parser.js"></script>
+<script>
+const BLOCK_PAUSE=180; // descanso entre bloques según el coach (~3 min)
+const LS={
+  get(k,d){try{const v=localStorage.getItem(k);return v===null?d:JSON.parse(v)}catch(e){return d}},
+  set(k,v){try{localStorage.setItem(k,JSON.stringify(v))}catch(e){}}
+};
+let DAYS=[],ETAPA="",cur=LS.get("e_day","d1");
+let state=LS.get("e_state",{});      // series marcadas de la sesión en curso
+let kgNow=LS.get("e_kg",{});         // pesos escritos en la sesión en curso
+let history=LS.get("e_hist",[]);     // sesiones terminadas
+const saveAll=()=>{LS.set("e_state",state);LS.set("e_kg",kgNow);LS.set("e_hist",history)};
+const exKey=(day,e)=>day.id+"|"+e.n;
+
+async function load(){
+  try{
+    const et=await fetch("dias/etapa.txt",{cache:"no-store"});if(et.ok)ETAPA=(await et.text()).trim();
+  }catch(e){}
+  for(let i=1;i<=7;i++){
+    try{const r=await fetch(`dias/dia${i}.txt`,{cache:"no-store"});if(!r.ok)break;DAYS.push(parseDay(await r.text(),i))}
+    catch(e){break}
+  }
+  document.getElementById("etapa").textContent=ETAPA;
+  if(!DAYS.length){document.getElementById("main").innerHTML=`<div class="err">No se pudo cargar el plan. Si abriste el archivo en local, súbelo a GitHub Pages: el navegador no deja leer los .txt desde el disco.</div>`;return}
+  // si cambió la etapa, limpia las series marcadas (el historial se conserva)
+  if(LS.get("e_etapa","")!==ETAPA){state={};kgNow={};LS.set("e_etapa",ETAPA);saveAll()}
+  if(!DAYS.find(d=>d.id===cur)&&!["log","info"].includes(cur))cur="d1";
+  renderTabs();render();
+}
+
+function renderTabs(){
+  const tabs=[...DAYS.map(d=>({id:d.id,t:d.tab})),{id:"log",t:"Registro"},{id:"info",t:"Glosario"}];
+  document.getElementById("tabs").innerHTML=tabs.map(d=>`<button class="tab ${d.id===cur?"on":""}" data-d="${d.id}">${d.t}</button>`).join("");
+  document.querySelectorAll(".tab").forEach(b=>b.onclick=()=>{cur=b.dataset.d;LS.set("e_day",cur);renderTabs();render();window.scrollTo(0,0)});
+}
+
+function restSecs(r){const n=String(r).split("-").map(x=>parseInt(x)).filter(x=>!isNaN(x));return n.length?n[0]:0}
+function lastKg(day,e){
+  const k=exKey(day,e);
+  for(let i=history.length-1;i>=0;i--){const v=history[i].kg&&history[i].kg[k];if(v)return v}
+  return "";
+}
+function blockTotal(b){return b.simple?1:b.stretch?b.sets*b.stretch.length:b.sets}
+function blockDone(st,b,i){
+  const key="b"+i;
+  if(b.simple)return st[key]?1:0;
+  if(b.stretch)return b.stretch.reduce((a,_,j)=>a+(st[key+"_"+j]||[]).filter(Boolean).length,0);
+  return (st[key]||[]).filter(Boolean).length;
+}
+
+function render(){
+  const m=document.getElementById("main");
+  if(cur==="info"){m.innerHTML=glosario();return}
+  if(cur==="log"){renderLog();return}
+  const day=DAYS.find(d=>d.id===cur);
+  const st=state[cur]=state[cur]||{};
+  let h=`<div class="foco">Foco</div><div class="foco-t">${day.foco||day.tab}</div><div class="prog"><i id="pbar"></i></div>`;
+  day.blocks.forEach((b,i)=>{
+    const key="b"+i,ok=blockDone(st,b,i)>=blockTotal(b);
+    if(b.simple){
+      h+=`<div class="block ${ok?"ok":""}" data-b="${i}"><div class="btype"><span class="badge cardio">CARDIO</span>${b.timer?`<button class="restbtn" data-t="${b.timer}" data-l="${b.simple.toUpperCase()}">▶ ${b.r}</button>`:""}</div>
+      <div class="simple"><div><div class="exn">${b.simple}</div><div class="exm"><b>${b.r}</b></div></div>
+      <button class="chk ${st[key]?"d":""}" data-k="${key}" data-b="${i}">${st[key]?"✓":""}</button></div></div>`;
+      return;
+    }
+    if(b.stretch){
+      h+=`<div class="block ${ok?"ok":""}" data-b="${i}"><div class="btype"><span class="badge stretch">ESTIRAMIENTO · ${b.sets} SERIES</span><button class="restbtn" data-t="30" data-l="ESTIRAMIENTO">▶ 30"</button></div>`;
+      b.stretch.forEach((s,j)=>{
+        const k=key+"_"+j,arr=st[k]||[];
+        h+=`<div class="ex"><div class="exn">${s.n}</div><div class="exm"><b>${s.r}</b></div><div class="sets">${
+          Array.from({length:b.sets},(_,n)=>`<button class="set ${arr[n]?"d":""}" data-k="${k}" data-n="${n}" data-b="${i}">${n+1}</button>`).join("")}</div></div>`;
+      });
+      h+=`</div>`;return;
+    }
+    const arr=st[key]||[],rs=restSecs(b.rest);
+    h+=`<div class="block ${ok?"ok":""}" data-b="${i}"><div class="btype"><span class="badge">${b.type} · ${b.sets} ${b.sets>1?"SERIES":"SERIE"}</span>${b.rest?`<button class="restbtn" data-t="${rs}">⏱ ${b.rest}"</button>`:""}</div>`;
+    b.ex.forEach(e=>{
+      const k=exKey(day,e),prev=lastKg(day,e);
+      h+=`<div class="ex"><div class="exn">${e.n}${e.drop?'<span class="tag">DROP</span>':""}</div>
+      <div class="exm">${e.m?e.m+" · ":""}<b>${e.r}</b>${e.tut?` · TUT ${e.tut}`:""}</div>
+      ${e.kg?`<div class="kg"><input type="text" inputmode="decimal" placeholder="${prev?prev:"kg"}" data-kg="${k}" value="${kgNow[k]||""}"><label>${prev?"kg · última vez "+prev:"kg"}</label></div>`:""}</div>`;
+    });
+    (b.notes||[]).forEach(n=>h+=`<div class="note">${n}</div>`);
+    h+=`<div class="sets">${Array.from({length:b.sets},(_,n)=>`<button class="set ${arr[n]?"d":""}" data-k="${key}" data-n="${n}" data-r="${rs}" data-b="${i}">${n+1}</button>`).join("")}</div></div>`;
+  });
+  h+=`<button class="btn pri" id="finish">Terminar sesión y guardar</button><button class="btn ghost" id="reset">Reiniciar sin guardar</button>`;
+  m.innerHTML=h;
+
+  const afterMark=(el,justDone,restS)=>{
+    const bi=+el.dataset.b,b=day.blocks[bi],blk=m.querySelector(`.block[data-b="${bi}"]`);
+    const full=blockDone(st,b,bi)>=blockTotal(b);blk.classList.toggle("ok",full);
+    if(justDone){
+      if(full&&bi<day.blocks.length-1&&!b.simple)startTimer(BLOCK_PAUSE,"CAMBIO DE BLOQUE");
+      else if(restS)startTimer(restS,"DESCANSO");
+    }
+    progress(day);
+  };
+  m.querySelectorAll(".set").forEach(el=>el.onclick=()=>{
+    const k=el.dataset.k,n=+el.dataset.n;st[k]=st[k]||[];st[k][n]=!st[k][n];saveAll();
+    el.classList.toggle("d",!!st[k][n]);afterMark(el,!!st[k][n],+el.dataset.r||0);
+  });
+  m.querySelectorAll(".chk").forEach(el=>el.onclick=()=>{
+    const k=el.dataset.k;st[k]=!st[k];saveAll();el.classList.toggle("d",st[k]);el.textContent=st[k]?"✓":"";afterMark(el,false,0);
+  });
+  m.querySelectorAll(".restbtn").forEach(el=>el.onclick=()=>startTimer(+el.dataset.t,el.dataset.l||"DESCANSO"));
+  m.querySelectorAll("[data-kg]").forEach(el=>el.oninput=()=>{kgNow[el.dataset.kg]=el.value.trim();saveAll()});
+  document.getElementById("finish").onclick=()=>finish(day);
+  document.getElementById("reset").onclick=()=>{if(confirm("¿Borrar las series marcadas y los pesos de hoy?")){state[cur]={};clearKg(day);saveAll();render()}};
+  progress(day);
+}
+
+function clearKg(day){Object.keys(kgNow).forEach(k=>{if(k.startsWith(day.id+"|"))delete kgNow[k]})}
+
+function finish(day){
+  const st=state[day.id]||{};let tot=0,done=0;
+  day.blocks.forEach((b,i)=>{tot+=blockTotal(b);done+=blockDone(st,b,i)});
+  if(!done){alert("No has marcado ninguna serie todavía.");return}
+  const kg={},sets={};
+  day.blocks.forEach((b,i)=>{if(b.ex)b.ex.forEach(e=>{const k=exKey(day,e);if(kgNow[k])kg[k]=kgNow[k];sets[k]=blockDone(st,b,i)+"/"+b.sets})});
+  history.push({fecha:new Date().toISOString(),etapa:ETAPA,dia:day.tab,foco:day.foco,pct:Math.round(done/tot*100),kg,sets});
+  state[day.id]={};clearKg(day);saveAll();
+  cur="log";LS.set("e_day",cur);renderTabs();render();window.scrollTo(0,0);
+}
+
+function progress(day){
+  const st=state[day.id]||{};let tot=0,done=0;
+  day.blocks.forEach((b,i)=>{tot+=blockTotal(b);done+=blockDone(st,b,i)});
+  const p=document.getElementById("pbar");if(p)p.style.width=(tot?done/tot*100:0)+"%";
+}
+
+function fmtDate(iso){const d=new Date(iso);return d.toLocaleDateString("es-ES",{weekday:"short",day:"numeric",month:"short"})}
+function logText(s){
+  const lines=Object.keys(s.sets||{}).map(k=>{const n=k.split("|")[1];return `- ${n}: ${s.kg[k]?s.kg[k]+" kg, ":""}${s.sets[k]} series`});
+  return `${fmtDate(s.fecha)} · ${s.dia} (${s.foco}) · ${s.etapa} · ${s.pct}% completado\n${lines.join("\n")}`;
+}
+function renderLog(){
+  const m=document.getElementById("main");
+  if(!history.length){m.innerHTML=`<div class="foco-t">Registro</div><div class="empty">Aún no hay sesiones guardadas.<br>Al acabar un día, pulsa "Terminar sesión y guardar".</div>`;return}
+  let h=`<div class="foco-t">Registro</div><p class="exm" style="margin-bottom:14px">${history.length} sesiones guardadas en este móvil</p>
+  <button class="btn pri" id="copy" style="margin-bottom:14px">Copiar registro para el coach</button>`;
+  [...history].reverse().forEach((s,ri)=>{
+    const idx=history.length-1-ri;
+    h+=`<div class="log"><h4>${s.dia} · ${fmtDate(s.fecha)} <span>· ${s.pct}% · ${s.etapa||""}</span></h4><div>${
+      Object.keys(s.sets||{}).map(k=>`${k.split("|")[1]}: <b>${s.kg[k]?s.kg[k]+" kg":"-"}</b> · ${s.sets[k]}`).join("<br>")
+    }</div><button class="btn ghost" data-del="${idx}" style="margin-top:6px;padding:6px">Borrar</button></div>`;
+  });
+  m.innerHTML=h;
+  document.getElementById("copy").onclick=async()=>{
+    const txt=history.map(logText).join("\n\n");
+    try{await navigator.clipboard.writeText(txt);alert("Copiado. Pégalo en WhatsApp o donde quieras.")}
+    catch(e){prompt("Copia el texto:",txt)}
+  };
+  m.querySelectorAll("[data-del]").forEach(b=>b.onclick=()=>{if(confirm("¿Borrar esta sesión?")){history.splice(+b.dataset.del,1);saveAll();renderLog()}});
+}
+
+let tInt=null,tEnd=0,tTotal=0;
+function startTimer(s,label){
+  clearInterval(tInt);tTotal=s;tEnd=Date.now()+s*1000;
+  document.getElementById("tlabel").textContent=label||"DESCANSO";
+  document.getElementById("timer").classList.add("on");tick();tInt=setInterval(tick,250);
+}
+function tick(){
+  const left=Math.max(0,Math.round((tEnd-Date.now())/1000));
+  const t=document.getElementById("tt");t.textContent=Math.floor(left/60)+":"+String(left%60).padStart(2,"0");
+  document.getElementById("tbar").style.width=(tTotal?(1-left/tTotal)*100:100)+"%";
+  t.classList.toggle("end",left===0);
+  if(left===0){clearInterval(tInt);if(navigator.vibrate)navigator.vibrate([300,150,300]);beep()}
+}
+let actx=null;
+function beep(){try{actx=actx||new (window.AudioContext||window.webkitAudioContext)();const o=actx.createOscillator(),g=actx.createGain();o.frequency.value=880;g.gain.value=.3;o.connect(g);g.connect(actx.destination);o.start();o.stop(actx.currentTime+.5)}catch(e){}}
+document.addEventListener("click",()=>{try{actx=actx||new (window.AudioContext||window.webkitAudioContext)();if(actx.state==="suspended")actx.resume()}catch(e){}},{once:true});
+document.getElementById("tplus").onclick=()=>{tEnd+=15000;tTotal+=15;clearInterval(tInt);tInt=setInterval(tick,250);tick()};
+document.getElementById("tstop").onclick=()=>{clearInterval(tInt);document.getElementById("timer").classList.remove("on")};
+
+function glosario(){return `<div class="gl">
+<div class="foco-t">Glosario técnico</div>
+<h3>Mind Muscle Connection</h3>
+<p>Atención puesta en el músculo que trabajas: controla el recorrido y cada repetición, con una carga que no te obligue a balancear ni compensar. No sentir quemazón no significa que el músculo no trabaje.</p>
+<h3>Time Under Tension (TUT)</h3>
+<p>Cada número son segundos. Ejemplo 6:0:1:2</p>
+<div class="tut"><div><b>6</b>Excéntrico</div><div><b>0</b>Pausa</div><div><b>1</b>Concéntrico</div><div><b>2</b>Retención</div></div>
+<ul><li><b>Excéntrico:</b> el músculo se alarga controlando la carga (bajar la barra en un curl).</li>
+<li><b>Pausa:</b> entre bajar y subir, manteniendo la posición. 0 = sin pausa.</li>
+<li><b>Concéntrico:</b> el músculo se acorta para mover la carga.</li>
+<li><b>Retención final:</b> pausa arriba antes de la siguiente repetición.</li></ul>
+<h3>Descansos</h3>
+<ul><li>El REST indicado va al terminar cada serie, o cada vuelta completa en Super Set / Compound Set.</li>
+<li>Entre bloques: unos 3 minutos en total (incluye preparar el material). La web lo lanza sola al completar un bloque.</li>
+<li>NO REST: sin descanso, solo el tiempo de cambiar de ejercicio.</li></ul>
+<h3>Tipos de serie</h3>
+<ul><li><b>Super Set:</b> 2 o más ejercicios seguidos del mismo grupo muscular.</li>
+<li><b>Compound Set:</b> 2 o más ejercicios seguidos de distinto grupo muscular.</li>
+<li><b>Drop Set:</b> mismas reps bajando el peso cada vez, sin descanso (ej. 8/8).</li>
+<li><b>Pyramid Set:</b> al bajar las reps puedes subir el peso si la técnica lo permite.</li>
+<li><b>Straight Set:</b> mismas reps; mantén la carga si completas con buena técnica.</li>
+<li><b>Fallo:</b> todas las reps completas con buena técnica, sin balanceos.</li>
+<li><b>2x10 4x6:</b> 2 series de 10 y luego 4 de 6. <b>x pierna / x brazo:</b> esas reps con cada lado.</li></ul>
+<h3>Elegir la carga</h3>
+<p>La referencia son las reps: llegar con lo justo a la última manteniendo técnica. Si te sobran muchas, sube en la siguiente serie; si no llegas o pierdes técnica, baja.</p>
+<h3>Agarres y apoyos</h3>
+<ul><li><b>Supinación:</b> palmas arriba. <b>Pronación:</b> palmas abajo. <b>Neutro:</b> enfrentadas.</li>
+<li><b>Regular:</b> pies al ancho de cadera. <b>Juntas:</b> pies uno al lado del otro. <b>Sumo:</b> más abierto, puntas hacia fuera.</li></ul>
+</div>`}
+
+load();
+</script>
+</body>
+</html>
